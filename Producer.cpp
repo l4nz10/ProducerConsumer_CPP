@@ -1,6 +1,7 @@
 #include <iostream>
 
 #include "Producer.h"
+#include "ConcurrentQueue.h"
 
 Producer::Producer(std::string name, ConcurrentQueue* queue) : QueueHandler(name, queue) {
 	counter = 1;
@@ -8,15 +9,10 @@ Producer::Producer(std::string name, ConcurrentQueue* queue) : QueueHandler(name
 
 Producer::Producer(std::string name) : Producer(name, nullptr) {}
 
-void Producer::execute() {
-	while (active) {
-		if (queue == nullptr) {
-			std::cout << "["+name+"]: No assigned queue." << "\n";
-			break;
-		}
-		if (queue->push(counter)) {
-			counter++;
-		}
+bool Producer::execute() {
+	bool success = queue->push(counter);
+	if (success) {
+		counter++;
 	}
-	std::cout << "["+name+"] Quitting..." << std::endl;
+	return success;
 }

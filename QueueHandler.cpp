@@ -5,7 +5,7 @@
 QueueHandler::QueueHandler(std::string name, ConcurrentQueue* queue) : name(name),
 																																			 queue(queue),
 																																			 thread(nullptr),
-																																			 alive(false),
+																																			 running(false),
 																																			 keep_going(true) {}
 
 QueueHandler::~QueueHandler() {
@@ -27,45 +27,54 @@ ConcurrentQueue* QueueHandler::unsetQueue() {
 }
 
 void QueueHandler::start() {
-	if (!alive) {
-		alive = true;
+	mutex.lock();
+	if (!running) {
+		running = true;
 		keep_going = true;
+		mutex.unlock();
 		thread = new std::thread(&QueueHandler::run, this);
+		return;
 	}
+	mutex.unlock();
 }
 
 void QueueHandler::kill() {
 	mutex.lock();
-	if (alive) {
-		alive = false;
+	if (running) {
+		running = false;
 		mutex.unlock();
 		cv.notify_one();
 		thread->join();
 		delete thread;
 		thread = nullptr;
+		return;
 	}
 	mutex.unlock();
 }
 
 void QueueHandler::run() {
 	std::unique_lock<std::mutex> lock(mutex);
-	while (alive) {
-		cv.wait(lock, [this](){return alive && !keep_going;});
+	while (running) {
+		cv.wait(lock, [this](){return running && !keep_going;});
 		keep_going = execute();
 		lock.unlock();
 	}
 }
 
 void QueueHandler::stop() {
-	std::lock_guard<std::mutex> lock(mutex);
-	if (alive) {
-		alive = false;
+	mutex.lock();
+	if (running) {
+		running = false;
+		mutex.unlock();
 		cv.notify_one();
+		return;
 	}
+	mutex.unlock();
 }
 
-void QueueHandler::notify() {
-	std::lock_guard<std::mutex> lock(mutex);
+void QueueHandler::awake() {
+	mutex.lock();
 	keep_going = true;
+	mutex.unlock();
 	cv.notify_one();
 }

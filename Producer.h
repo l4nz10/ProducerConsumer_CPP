@@ -1,10 +1,3 @@
-/*
- * Producer.h
- *
- *  Created on: 27 nov 2015
- *      Author: valerio
- */
-
 #ifndef PRODUCER_H_
 #define PRODUCER_H_
 
@@ -15,10 +8,11 @@
 class Producer : public QueueHandler {
 private:
 	int counter;
+protected:
+	virtual bool execute();
 public:
 	Producer(std::string name, ConcurrentQueue* queue);
 	Producer(std::string name);
-	virtual void execute();
 };
 
 #endif /* PRODUCER_H_ */
