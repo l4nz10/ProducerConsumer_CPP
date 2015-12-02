@@ -10,8 +10,8 @@ protected:
 	virtual bool execute();
 public:
 	Consumer(std::string name);
-	virtual void setQueue(ConcurrentQueue * queue);
-	virtual ConcurrentQueue * unsetQueue();
+	virtual ConcurrentQueue * setQueue(ConcurrentQueue * queue);
+	virtual ConcurrentQueue * safeUnsetQueue();
 };
 
 #endif /* CONSUMER_H_ */

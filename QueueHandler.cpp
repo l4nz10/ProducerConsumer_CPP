@@ -12,8 +12,11 @@ QueueHandler::~QueueHandler() {
 	stop();
 }
 
-void QueueHandler::setQueue(ConcurrentQueue* q) {
+ConcurrentQueue * QueueHandler::setQueue(ConcurrentQueue* q) {
+	stop();
+	ConcurrentQueue * oldQueue = queue;
 	queue = q;
+	return oldQueue;
 }
 
 ConcurrentQueue * QueueHandler::getQueue() {
@@ -21,9 +24,10 @@ ConcurrentQueue * QueueHandler::getQueue() {
 }
 
 ConcurrentQueue * QueueHandler::unsetQueue() {
-	ConcurrentQueue* q = queue;
+	stop();
+	ConcurrentQueue * oldQueue;
 	queue = nullptr;
-	return q;
+	return oldQueue;
 }
 
 void QueueHandler::start() {
@@ -38,7 +42,7 @@ void QueueHandler::start() {
 void QueueHandler::stop() {
 	if (!dead) {
 		dead = true;
-		cv.notify_all();
+		cv.notify_one();
 		thread->join();
 		delete thread;
 		thread = nullptr;
@@ -60,5 +64,5 @@ void QueueHandler::awake() {
 	mutex.lock();
 	keep_going = true;
 	mutex.unlock();
-	cv.notify_all();
+	cv.notify_one();
 }

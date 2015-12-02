@@ -5,15 +5,21 @@
 
 Consumer::Consumer(std::string name) : QueueHandler(name) {};
 
-void Consumer::setQueue(ConcurrentQueue* q) {
-	QueueHandler::setQueue(q);
+ConcurrentQueue * Consumer::setQueue(ConcurrentQueue * q) {
+	ConcurrentQueue * oldQueue = QueueHandler::setQueue(q);
+	if (oldQueue != nullptr) {
+		oldQueue->removeConsumer(this);
+	}
 	queue->addConsumer(this);
+	return oldQueue;
 }
 
-ConcurrentQueue * Consumer::unsetQueue() {
-	ConcurrentQueue * q = QueueHandler::unsetQueue();
-	q->removeConsumer(this);
-	return q;
+ConcurrentQueue * Consumer::safeUnsetQueue() {
+	ConcurrentQueue * oldQueue = QueueHandler::unsetQueue();
+	if (oldQueue != nullptr) {
+		oldQueue->removeConsumer(this);
+	}
+	return oldQueue;
 }
 
 bool Consumer::execute() {

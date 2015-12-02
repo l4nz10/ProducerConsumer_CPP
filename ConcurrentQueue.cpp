@@ -5,7 +5,14 @@
 ConcurrentQueue::ConcurrentQueue(unsigned int size) : MAX_SIZE(size) {}
 
 ConcurrentQueue::~ConcurrentQueue() {
-	std::cout << "Destroying queue object" << std::endl;
+	for (int i = 0; i < producers.size(); i++) {
+		producers[i]->unsetQueue();
+	}
+	producers.clear();
+	for (int i = 0; i < consumers.size(); i++) {
+		consumers[i]->unsetQueue();
+	}
+	consumers.clear();
 }
 
 void ConcurrentQueue::addProducer(QueueHandler * producer) {

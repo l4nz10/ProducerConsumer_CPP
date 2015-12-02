@@ -25,8 +25,8 @@ int main() {
 	producer->stop();
 	consumer->stop();
 
+	delete queue;
 	delete producer;
 	delete consumer;
-	delete queue;
 	delete factory;
 }

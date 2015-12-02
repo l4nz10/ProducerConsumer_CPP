@@ -8,6 +8,8 @@
 #ifndef FACTORY_H_
 #define FACTORY_H_
 
+#include <string>
+
 #include "Producer.h"
 #include "Consumer.h"
 #include "ConcurrentQueue.h"

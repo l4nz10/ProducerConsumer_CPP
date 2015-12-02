@@ -12,8 +12,8 @@ protected:
 	virtual bool execute();
 public:
 	Producer(std::string name);
-	virtual void setQueue(ConcurrentQueue * queue);
-	virtual ConcurrentQueue * unsetQueue();
+	virtual ConcurrentQueue * setQueue(ConcurrentQueue * queue);
+	virtual ConcurrentQueue * safeUnsetQueue();
 };
 
 #endif /* PRODUCER_H_ */

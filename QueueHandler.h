@@ -20,7 +20,7 @@ protected:
 	virtual void run();
 	virtual bool execute() = 0;
 public:
-	virtual void setQueue(ConcurrentQueue * queue);
+	virtual ConcurrentQueue * setQueue(ConcurrentQueue * queue);
 	virtual ConcurrentQueue * getQueue();
 	virtual ConcurrentQueue * unsetQueue();
 	virtual void start();

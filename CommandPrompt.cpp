@@ -37,13 +37,13 @@
 //     std::cin >> action;
 //     switch (action) {
 //       case 1:
-//         // Create producer
+//         createProducer();
 //         break;
 //       case 2:
-//         // Create producer
+//         createConsumer();
 //         break;
 //       case 3:
-//         // Create queue
+//         createQueue();
 //         break;
 //       case 4:
 //         manageProducer();
