@@ -3,11 +3,20 @@
 #include "Producer.h"
 #include "ConcurrentQueue.h"
 
-Producer::Producer(std::string name, ConcurrentQueue* queue) : QueueHandler(name, queue) {
+Producer::Producer(std::string name) : QueueHandler(name) {
 	counter = 1;
 }
 
-Producer::Producer(std::string name) : Producer(name, nullptr) {}
+void Producer::setQueue(ConcurrentQueue* q) {
+	QueueHandler::setQueue(q);
+	queue->addProducer(this);
+}
+
+ConcurrentQueue * Producer::unsetQueue() {
+	ConcurrentQueue * q = QueueHandler::unsetQueue();
+	q->removeProducer(this);
+	return q;
+}
 
 bool Producer::execute() {
 	bool success = queue->push(counter);

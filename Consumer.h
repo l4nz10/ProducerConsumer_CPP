@@ -9,8 +9,9 @@ class Consumer : public QueueHandler {
 protected:
 	virtual bool execute();
 public:
-	Consumer(std::string name, ConcurrentQueue* queue);
 	Consumer(std::string name);
+	virtual void setQueue(ConcurrentQueue * queue);
+	virtual ConcurrentQueue * unsetQueue();
 };
 
 #endif /* CONSUMER_H_ */

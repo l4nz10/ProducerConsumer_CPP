@@ -15,8 +15,8 @@ protected:
 	std::thread* thread;
 	std::mutex mutex;
 	std::condition_variable cv;
-	bool running, keep_going;
-	QueueHandler(std::string name, ConcurrentQueue * queue);
+	bool dead, keep_going;
+	QueueHandler(std::string name);
 	virtual void run();
 	virtual bool execute() = 0;
 public:
@@ -26,7 +26,6 @@ public:
 	virtual void start();
 	virtual void stop();
 	virtual void awake();
-	virtual void kill();
 	virtual ~QueueHandler();
 };
 

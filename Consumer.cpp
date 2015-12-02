@@ -3,9 +3,18 @@
 #include "Consumer.h"
 #include "ConcurrentQueue.h"
 
-Consumer::Consumer(std::string name, ConcurrentQueue* queue) : QueueHandler(name, queue) {}
+Consumer::Consumer(std::string name) : QueueHandler(name) {};
 
-Consumer::Consumer(std::string name) : Consumer(name, nullptr) {};
+void Consumer::setQueue(ConcurrentQueue* q) {
+	QueueHandler::setQueue(q);
+	queue->addConsumer(this);
+}
+
+ConcurrentQueue * Consumer::unsetQueue() {
+	ConcurrentQueue * q = QueueHandler::unsetQueue();
+	q->removeConsumer(this);
+	return q;
+}
 
 bool Consumer::execute() {
 	int elem = queue->get_and_pop();

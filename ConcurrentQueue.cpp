@@ -49,24 +49,28 @@ void ConcurrentQueue::awakeConsumers() {
 
 bool ConcurrentQueue::push(int element) {
 	bool success = false;
-	{
-		std::lock_guard<std::mutex> lock(mutex);
-		if (queue.size() < MAX_SIZE) {
-				queue.push(element);
-				success = true;
-		}
+	mutex.lock();
+	if (queue.size() < MAX_SIZE) {
+			queue.push(element);
+			success = true;
+	}
+	mutex.unlock();
+	if (success) {
+		awakeConsumers();
 	}
 	return success;
 }
 
 bool ConcurrentQueue::pop() {
 	bool success = false;
-	{
-		std::lock_guard<std::mutex> lock(mutex);
-		if (queue.size() > 0) {
-				queue.pop();
-				success = true;
-		}
+	mutex.lock();
+	if (queue.size() > 0) {
+			queue.pop();
+			success = true;
+	}
+	mutex.unlock();
+	if (success) {
+		awakeProducers();
 	}
 	return success;
 }
@@ -74,23 +78,24 @@ bool ConcurrentQueue::pop() {
 
 int ConcurrentQueue::get() {
 	int elem = 0;
-	{
-		std::lock_guard<std::mutex> lock(mutex);
-		if (queue.size() > 0) {
-			elem = queue.front();
-		}
+	mutex.lock();
+	if (queue.size() > 0) {
+		elem = queue.front();
 	}
+	mutex.unlock();
 	return elem;
 }
 
 int ConcurrentQueue::get_and_pop() {
 	int elem = 0;
-	{
-		std::lock_guard<std::mutex> lock(mutex);
-		if (queue.size() > 0) {
-			elem = queue.front();
-			queue.pop();
-		}
+	mutex.lock();
+	if (queue.size() > 0) {
+		elem = queue.front();
+		queue.pop();
+	}
+	mutex.unlock();
+	if (elem != 0) {
+		awakeProducers();
 	}
 	return elem;
 }

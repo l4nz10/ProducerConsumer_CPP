@@ -15,23 +15,15 @@ int main() {
 	producer->setQueue(queue);
 	consumer->setQueue(queue);
 
-	std::thread * prodThread, * consThread;
+	producer->start();
+	consumer->start();
 
-	prodThread = new std::thread(&Producer::execute, producer);
-	consThread = new std::thread(&Consumer::execute, consumer);
-
-	std::this_thread::sleep_for(std::chrono::milliseconds(500));
+	std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
 	std::cout << "> > > > > KILLING." << "\n";
 
 	producer->stop();
 	consumer->stop();
-
-	prodThread->join();
-	consThread->join();
-
-	delete prodThread;
-	delete consThread;
 
 	delete producer;
 	delete consumer;

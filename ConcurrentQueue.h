@@ -14,14 +14,14 @@ protected:
 	std::vector<QueueHandler *> producers;
 	std::vector<QueueHandler *> consumers;
 	const unsigned int MAX_SIZE;
+	virtual void awakeProducers();
+	virtual void awakeConsumers();
 public:
 	explicit ConcurrentQueue(unsigned int size);
 	virtual void addProducer(QueueHandler * producer);
 	virtual void addConsumer(QueueHandler * consumer);
 	virtual void removeProducer(QueueHandler * producer);
 	virtual void removeConsumer(QueueHandler * consumer);
-	virtual void awakeProducers();
-	virtual void awakeConsumers();
 	virtual bool push(int element);
 	virtual bool pop();
 	virtual int get();
