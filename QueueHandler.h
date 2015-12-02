@@ -3,24 +3,31 @@
 
 #include <string>
 #include <thread>
+#include <mutex>
+#include <condition_variable>
 
-#include "BlockingQueue.h"
+#include "ConcurrentQueue.h"
 
 class QueueHandler {
 protected:
 	std::string name;
+	ConcurrentQueue* queue;
 	std::thread* thread;
-	BlockingQueue* queue;
-	bool active;
-	QueueHandler(std::string name, BlockingQueue* queue);
+	std::mutex mutex;
+	std::condition_variable cv;
+	bool alive, keep_going;
+	QueueHandler(std::string name, ConcurrentQueue* queue);
+	virtual void run();
+	virtual bool execute() = 0;
 public:
-	virtual void setQueue(BlockingQueue* queue);
-	virtual BlockingQueue* getQueue();
-	virtual BlockingQueue* unsetQueue();
-	virtual ~QueueHandler();
+	virtual void setQueue(ConcurrentQueue* queue);
+	virtual ConcurrentQueue* getQueue();
+	virtual ConcurrentQueue* unsetQueue();
 	virtual void start();
 	virtual void kill();
-	virtual void execute() = 0;
+	virtual void stop();
+	virtual void notify();
+	virtual ~QueueHandler();
 };
 
 #endif /* QUEUEHANDLER_H_ */

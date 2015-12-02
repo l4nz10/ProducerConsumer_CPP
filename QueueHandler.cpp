@@ -2,35 +2,70 @@
 
 #include "QueueHandler.h"
 
-QueueHandler::QueueHandler(std::string name, BlockingQueue* queue) : name(name), queue(queue), active(false) {}
+QueueHandler::QueueHandler(std::string name, ConcurrentQueue* queue) : name(name),
+																																			 queue(queue),
+																																			 thread(nullptr),
+																																			 alive(false),
+																																			 keep_going(true) {}
 
 QueueHandler::~QueueHandler() {
 	kill();
 }
 
-void QueueHandler::setQueue(BlockingQueue* queue) {
-	this->queue = queue;
+void QueueHandler::setQueue(ConcurrentQueue* q) {
+	queue = q;
 }
 
-BlockingQueue* QueueHandler::getQueue() {
+ConcurrentQueue* QueueHandler::getQueue() {
 	return queue;
 }
 
-BlockingQueue* QueueHandler::unsetQueue() {
-	BlockingQueue* q = queue;
+ConcurrentQueue* QueueHandler::unsetQueue() {
+	ConcurrentQueue* q = queue;
 	queue = nullptr;
 	return q;
 }
 
 void QueueHandler::start() {
-	active = true;
-	thread = new std::thread(&QueueHandler::execute, this);
+	if (!alive) {
+		alive = true;
+		keep_going = true;
+		thread = new std::thread(&QueueHandler::run, this);
+	}
 }
 
 void QueueHandler::kill() {
-	active = false;
-	std::cout << "["+name+"]: Killing...";
-	thread->join();
-	delete thread;
-	std::cout << "done." << std::endl;
+	mutex.lock();
+	if (alive) {
+		alive = false;
+		mutex.unlock();
+		cv.notify_one();
+		thread->join();
+		delete thread;
+		thread = nullptr;
+	}
+	mutex.unlock();
+}
+
+void QueueHandler::run() {
+	std::unique_lock<std::mutex> lock(mutex);
+	while (alive) {
+		cv.wait(lock, [this](){return alive && !keep_going;});
+		keep_going = execute();
+		lock.unlock();
+	}
+}
+
+void QueueHandler::stop() {
+	std::lock_guard<std::mutex> lock(mutex);
+	if (alive) {
+		alive = false;
+		cv.notify_one();
+	}
+}
+
+void QueueHandler::notify() {
+	std::lock_guard<std::mutex> lock(mutex);
+	keep_going = true;
+	cv.notify_one();
 }

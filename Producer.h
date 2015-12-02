@@ -16,7 +16,7 @@ class Producer : public QueueHandler {
 private:
 	int counter;
 public:
-	Producer(std::string name, BlockingQueue* queue);
+	Producer(std::string name, ConcurrentQueue* queue);
 	Producer(std::string name);
 	virtual void execute();
 };

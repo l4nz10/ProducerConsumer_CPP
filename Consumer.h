@@ -7,7 +7,7 @@
 
 class Consumer : public QueueHandler {
 public:
-	Consumer(std::string name, BlockingQueue* queue);
+	Consumer(std::string name, ConcurrentQueue* queue);
 	Consumer(std::string name);
 	virtual void execute();
 };
