@@ -12,14 +12,14 @@
 
 #include "Producer.h"
 #include "Consumer.h"
-#include "ConcurrentQueue.h"
+#include "ThreadSafeQueue.h"
 
 class Factory {
 public:
 	static Factory* getFactory(int typecode);
 	virtual Producer* createProducer() = 0;
 	virtual Consumer* createConsumer() = 0;
-	virtual ConcurrentQueue* createQueue(int size) = 0;
+	virtual ThreadSafeQueue* createQueue(int size) = 0;
 	virtual ~Factory();
 };
 

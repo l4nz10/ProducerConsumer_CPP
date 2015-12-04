@@ -17,7 +17,7 @@ public:
 	BasicFactory();
 	virtual Producer* createProducer();
 	virtual Consumer* createConsumer();
-	virtual ConcurrentQueue* createQueue(int size);
+	virtual ThreadSafeQueue* createQueue(int size);
 	virtual ~BasicFactory();
 };
 

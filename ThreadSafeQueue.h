@@ -7,7 +7,7 @@
 
 #include "QueueHandler.h"
 
-class ConcurrentQueue {
+class ThreadSafeQueue {
 protected:
 	std::mutex mutex;
 	std::queue<int> queue;
@@ -17,7 +17,7 @@ protected:
 	virtual void awakeProducers();
 	virtual void awakeConsumers();
 public:
-	explicit ConcurrentQueue(unsigned int size);
+	explicit ThreadSafeQueue(unsigned int size);
 	virtual void addProducer(QueueHandler * producer);
 	virtual void addConsumer(QueueHandler * consumer);
 	virtual void removeProducer(QueueHandler * producer);
@@ -27,7 +27,7 @@ public:
 	virtual int get();
 	virtual int get_and_pop();
 	virtual unsigned int size();
-	virtual ~ConcurrentQueue();
+	virtual ~ThreadSafeQueue();
 };
 
 #endif /* CONCURRENTQUEUE_H_ */

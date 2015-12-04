@@ -1,27 +1,29 @@
 #include <iostream>
 
-#include "ConcurrentQueue.h"
+#include "ThreadSafeQueue.h"
 
-ConcurrentQueue::ConcurrentQueue(unsigned int size) : MAX_SIZE(size) {}
+ThreadSafeQueue::ThreadSafeQueue(unsigned int size) : MAX_SIZE(size) {}
 
-ConcurrentQueue::~ConcurrentQueue() {
-	for (unsigned int i = 0; i < producers.size(); i++) {
-		producers[i]->unsetQueue();
+ThreadSafeQueue::~ThreadSafeQueue() {
+	std::vector<QueueHandler *> prods(producers);
+	std::vector<QueueHandler *> conss(consumers);
+	for (unsigned int i = 0; i < prods.size(); i++) {
+		prods[i]->unsetQueue();
 	}
-	for (unsigned int i = 0; i < consumers.size(); i++) {
-		consumers[i]->unsetQueue();
+	for (unsigned int i = 0; i < conss.size(); i++) {
+		conss[i]->unsetQueue();
 	}
 }
 
-void ConcurrentQueue::addProducer(QueueHandler * producer) {
+void ThreadSafeQueue::addProducer(QueueHandler * producer) {
 	producers.push_back(producer);
 }
 
-void ConcurrentQueue::addConsumer(QueueHandler * consumer) {
+void ThreadSafeQueue::addConsumer(QueueHandler * consumer) {
 	consumers.push_back(consumer);
 }
 
-void ConcurrentQueue::removeProducer(QueueHandler * producer) {
+void ThreadSafeQueue::removeProducer(QueueHandler * producer) {
 	for (std::vector<QueueHandler *>::iterator it = producers.begin(); it != producers.end(); ++it) {
 		if (*it == producer) {
 			producers.erase(it);
@@ -30,7 +32,7 @@ void ConcurrentQueue::removeProducer(QueueHandler * producer) {
 	}
 }
 
-void ConcurrentQueue::removeConsumer(QueueHandler * consumer) {
+void ThreadSafeQueue::removeConsumer(QueueHandler * consumer) {
 	for (std::vector<QueueHandler *>::iterator it = consumers.begin(); it != consumers.end(); ++it) {
 		if (*it == consumer) {
 			consumers.erase(it);
@@ -39,20 +41,20 @@ void ConcurrentQueue::removeConsumer(QueueHandler * consumer) {
 	}
 }
 
-void ConcurrentQueue::awakeProducers() {
+void ThreadSafeQueue::awakeProducers() {
 	for (int i = 0; i < producers.size(); i++) {
 		producers[i]->awake();
 	}
 }
 
-void ConcurrentQueue::awakeConsumers() {
+void ThreadSafeQueue::awakeConsumers() {
 	for (int i = 0; i < consumers.size(); i++) {
 		consumers[i]->awake();
 	}
 }
 
 
-bool ConcurrentQueue::push(int element) {
+bool ThreadSafeQueue::push(int element) {
 	bool success = false;
 	mutex.lock();
 	if (queue.size() < MAX_SIZE) {
@@ -66,7 +68,7 @@ bool ConcurrentQueue::push(int element) {
 	return success;
 }
 
-bool ConcurrentQueue::pop() {
+bool ThreadSafeQueue::pop() {
 	bool success = false;
 	mutex.lock();
 	if (queue.size() > 0) {
@@ -81,7 +83,7 @@ bool ConcurrentQueue::pop() {
 }
 
 
-int ConcurrentQueue::get() {
+int ThreadSafeQueue::get() {
 	int elem = 0;
 	mutex.lock();
 	if (queue.size() > 0) {
@@ -91,7 +93,7 @@ int ConcurrentQueue::get() {
 	return elem;
 }
 
-int ConcurrentQueue::get_and_pop() {
+int ThreadSafeQueue::get_and_pop() {
 	int elem = 0;
 	mutex.lock();
 	if (queue.size() > 0) {
@@ -105,7 +107,7 @@ int ConcurrentQueue::get_and_pop() {
 	return elem;
 }
 
-unsigned int ConcurrentQueue::size() {
+unsigned int ThreadSafeQueue::size() {
 	std::lock_guard<std::mutex> lock(mutex);
 	return queue.size();
 }

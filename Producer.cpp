@@ -1,18 +1,21 @@
 #include <iostream>
 
 #include "Producer.h"
-#include "ConcurrentQueue.h"
+#include "ThreadSafeQueue.h"
 
 Producer::Producer(std::string name) : QueueHandler(name) {
 	counter = 1;
 }
 
 Producer::~Producer() {
-	safeUnsetQueue();
+	stop();
+	if (hasQueue()) {
+		queue->removeProducer(this);
+	}
 }
 
-ConcurrentQueue * Producer::setQueue(ConcurrentQueue* q) {
-	ConcurrentQueue * oldQueue = QueueHandler::setQueue(q);
+ThreadSafeQueue * Producer::setQueue(ThreadSafeQueue* q) {
+	ThreadSafeQueue * oldQueue = QueueHandler::setQueue(q);
 	if (oldQueue != nullptr) {
 		oldQueue->removeProducer(this);
 	}
@@ -22,8 +25,12 @@ ConcurrentQueue * Producer::setQueue(ConcurrentQueue* q) {
 	return oldQueue;
 }
 
-ConcurrentQueue * Producer::safeUnsetQueue() {
+ThreadSafeQueue * Producer::unsetQueue() {
 	return setQueue(nullptr);
+}
+
+ThreadSafeQueue * Producer::unsetQueueUnsafe() {
+	return QueueHandler::unsetQueue();
 }
 
 bool Producer::execute() {

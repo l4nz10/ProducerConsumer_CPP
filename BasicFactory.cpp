@@ -17,8 +17,8 @@ Consumer* BasicFactory::createConsumer() {
 	return new Consumer("Consumer "+converter.str());
 }
 
-ConcurrentQueue* BasicFactory::createQueue(int size) {
-	return new ConcurrentQueue(size);
+ThreadSafeQueue* BasicFactory::createQueue(int size) {
+	return new ThreadSafeQueue(size);
 }
 
 BasicFactory::~BasicFactory() {}

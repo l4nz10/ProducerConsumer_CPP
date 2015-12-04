@@ -2,8 +2,8 @@
 #include <thread>
 #include <queue>
 
-#include "CommandPrompt.h"
+#include "CommandLineInterface.h"
 
 int main() {
-	CommandPrompt commandPrompt;
+	CommandLineInterface commandLineInterface;
 }

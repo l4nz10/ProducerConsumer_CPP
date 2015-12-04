@@ -9,17 +9,17 @@ QueueHandler::QueueHandler(std::string name) : name(name),
 																							 keep_going(true) {}
 
 QueueHandler::~QueueHandler() {
-	unsetQueue();
+	stop();
 }
 
-ConcurrentQueue * QueueHandler::setQueue(ConcurrentQueue* q) {
+ThreadSafeQueue * QueueHandler::setQueue(ThreadSafeQueue* q) {
 	stop();
-	ConcurrentQueue * oldQueue = queue;
+	ThreadSafeQueue * oldQueue = queue;
 	queue = q;
 	return oldQueue;
 }
 
-ConcurrentQueue * QueueHandler::getQueue() {
+ThreadSafeQueue * QueueHandler::getQueue() {
 	return queue;
 }
 
@@ -27,7 +27,7 @@ bool QueueHandler::hasQueue() {
 	return queue != nullptr;
 }
 
-ConcurrentQueue * QueueHandler::unsetQueue() {
+ThreadSafeQueue * QueueHandler::unsetQueue() {
 	return QueueHandler::setQueue(nullptr);
 }
 

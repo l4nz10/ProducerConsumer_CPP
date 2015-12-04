@@ -4,14 +4,14 @@
 #include <vector>
 #include <thread>
 
-#include "CommandPrompt.h"
+#include "CommandLineInterface.h"
 #include "string_utils.h"
 
-CommandPrompt::CommandPrompt() {
+CommandLineInterface::CommandLineInterface() {
   welcome();
 }
 
-CommandPrompt::~CommandPrompt() {
+CommandLineInterface::~CommandLineInterface() {
   for (int i = 0; i < queues.size(); i++) {
     delete queues[i];
   }
@@ -24,13 +24,13 @@ CommandPrompt::~CommandPrompt() {
   delete factory;
 }
 
-void CommandPrompt::welcome() {
+void CommandLineInterface::welcome() {
   clearScreen();
   std::cout << "Welcome to the producer-consumer sample project.\n\n";
   selectFactory();
 }
 
-void CommandPrompt::selectFactory() {
+void CommandLineInterface::selectFactory() {
   while (true) {
     std::cout << "\n";
     std::cout << "Please pick first a factory type:" << "\n";
@@ -57,7 +57,7 @@ void CommandPrompt::selectFactory() {
   mainMenu();
 }
 
-void CommandPrompt::mainMenu() {
+void CommandLineInterface::mainMenu() {
   while (true) {
     std::cout << "\n";
     std::cout << "Type a command (type 'help' or 'h' for help)" << std::endl;
@@ -98,7 +98,7 @@ void CommandPrompt::mainMenu() {
   }
 }
 
-void CommandPrompt::createEntities(std::vector<std::string> args) {
+void CommandLineInterface::createEntities(std::vector<std::string> args) {
   int numOfProds = 0, numOfCons = 0, numOfQueues = 0;
   int i = 0;
   while (i < args.size()) {
@@ -123,7 +123,7 @@ void CommandPrompt::createEntities(std::vector<std::string> args) {
             << numOfQueues << " queues." << std::endl;
 }
 
-void CommandPrompt::removeEntities(std::vector<std::string> args) {
+void CommandLineInterface::removeEntities(std::vector<std::string> args) {
   std::vector<int> prodNumbers, consNumbers, queueNumbers;
 
   int index = 0;
@@ -234,7 +234,7 @@ void CommandPrompt::removeEntities(std::vector<std::string> args) {
   }
 }
 
-void CommandPrompt::listEntities(std::vector<std::string> args) {
+void CommandLineInterface::listEntities(std::vector<std::string> args) {
   bool showProds = false, showCons = false, showQueues = false;
 
   if (args.empty()) {
@@ -293,7 +293,7 @@ void CommandPrompt::listEntities(std::vector<std::string> args) {
   }
 }
 
-void CommandPrompt::setQueue(std::vector<std::string> args) {
+void CommandLineInterface::setQueue(std::vector<std::string> args) {
   int queueNumber = -1;
   std::vector<int> prodNumbers, consNumbers;
 
@@ -378,7 +378,7 @@ void CommandPrompt::setQueue(std::vector<std::string> args) {
   }
 }
 
-void CommandPrompt::unsetQueue(std::vector<std::string> args) {
+void CommandLineInterface::unsetQueue(std::vector<std::string> args) {
   std::vector<int> prodNumbers, consNumbers;
 
   int index = 0;
@@ -428,19 +428,19 @@ void CommandPrompt::unsetQueue(std::vector<std::string> args) {
 
   for (int i = 0; i < prodNumbers.size(); i++) {
     if (prodNumbers[i] >= 0 && prodNumbers[i] < producers.size()) {
-      producers[prodNumbers[i]]->safeUnsetQueue();
+      producers[prodNumbers[i]]->unsetQueue();
       std::cout << "Queue unset for Producer " << prodNumbers[i] << std::endl;
     }
   }
   for (int i = 0; i < consNumbers.size(); i++) {
     if (consNumbers[i] >= 0 && consNumbers[i] < consumers.size()) {
-      consumers[consNumbers[i]]->safeUnsetQueue();
+      consumers[consNumbers[i]]->unsetQueue();
       std::cout << "Queue unset for Consumer " << consNumbers[i] << std::endl;
     }
   }
 }
 
-void CommandPrompt::startQueueHandler(std::vector<std::string> args) {
+void CommandLineInterface::startQueueHandler(std::vector<std::string> args) {
   std::vector<int> prodNumbers, consNumbers;
 
   int index = 0;
@@ -504,7 +504,7 @@ void CommandPrompt::startQueueHandler(std::vector<std::string> args) {
   }
 }
 
-void CommandPrompt::stopQueueHandler(std::vector<std::string> args) {
+void CommandLineInterface::stopQueueHandler(std::vector<std::string> args) {
   std::vector<int> prodNumbers, consNumbers;
 
   int index = 0;
@@ -568,7 +568,7 @@ void CommandPrompt::stopQueueHandler(std::vector<std::string> args) {
   }
 }
 
-void CommandPrompt::showHelp() {
+void CommandLineInterface::showHelp() {
   std::string commands = "- create  ( p | c | q )+ \n"
                          "  \"Create one or more producer, consumer and/or queue.\"\n"
                          "- remove, delete  ( p (#)+ | c (#)+ | q (#)+ )+ \n"
@@ -590,6 +590,6 @@ void CommandPrompt::showHelp() {
   std::cout << "* List of commands:" << "\n" << commands << std::endl;
 }
 
-void CommandPrompt::clearScreen() {
+void CommandLineInterface::clearScreen() {
   std::cout << std::string(100, '\n');
 }

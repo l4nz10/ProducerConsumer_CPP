@@ -6,12 +6,12 @@
 
 #include "Factory.h"
 
-class CommandPrompt {
+class CommandLineInterface {
 private:
   Factory * factory;
   std::vector<Producer *> producers;
   std::vector<Consumer *> consumers;
-  std::vector<ConcurrentQueue *> queues;
+  std::vector<ThreadSafeQueue *> queues;
   void welcome();
   void selectFactory();
   void mainMenu();
@@ -25,8 +25,8 @@ private:
   void showHelp();
   void clearScreen();
 public:
-  CommandPrompt();
-  virtual ~CommandPrompt();
+  CommandLineInterface();
+  virtual ~CommandLineInterface();
 };
 
 #endif
