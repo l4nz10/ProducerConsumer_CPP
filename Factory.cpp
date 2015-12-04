@@ -21,6 +21,4 @@ Factory* Factory::getFactory(int typecode) {
 	}
 }
 
-Factory::~Factory() {
-	std::cout << "Destroying Factory object" << std::endl;
-}
+Factory::~Factory() {}

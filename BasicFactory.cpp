@@ -21,6 +21,4 @@ ConcurrentQueue* BasicFactory::createQueue(int size) {
 	return new ConcurrentQueue(size);
 }
 
-BasicFactory::~BasicFactory() {
-	std::cout << "Destroying BasicFactory" << std::endl;
-}
+BasicFactory::~BasicFactory() {}

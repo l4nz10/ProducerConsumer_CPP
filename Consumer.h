@@ -12,6 +12,7 @@ public:
 	Consumer(std::string name);
 	virtual ConcurrentQueue * setQueue(ConcurrentQueue * queue);
 	virtual ConcurrentQueue * safeUnsetQueue();
+	virtual ~Consumer();
 };
 
 #endif /* CONSUMER_H_ */

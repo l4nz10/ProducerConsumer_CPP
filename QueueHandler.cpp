@@ -9,7 +9,7 @@ QueueHandler::QueueHandler(std::string name) : name(name),
 																							 keep_going(true) {}
 
 QueueHandler::~QueueHandler() {
-	stop();
+	unsetQueue();
 }
 
 ConcurrentQueue * QueueHandler::setQueue(ConcurrentQueue* q) {
@@ -23,31 +23,40 @@ ConcurrentQueue * QueueHandler::getQueue() {
 	return queue;
 }
 
-ConcurrentQueue * QueueHandler::unsetQueue() {
-	stop();
-	ConcurrentQueue * oldQueue;
-	queue = nullptr;
-	return oldQueue;
+bool QueueHandler::hasQueue() {
+	return queue != nullptr;
 }
 
-void QueueHandler::start() {
-	if (dead) {
+ConcurrentQueue * QueueHandler::unsetQueue() {
+	return QueueHandler::setQueue(nullptr);
+}
+
+bool QueueHandler::start() {
+	if (dead && hasQueue()) {
 		dead = false;
 		keep_going = true;
 		thread = new std::thread(&QueueHandler::run, this);
-		return;
+		return true;
+	} else {
+		return false;
 	}
 }
 
-void QueueHandler::stop() {
+bool QueueHandler::stop() {
 	if (!dead) {
 		dead = true;
 		cv.notify_one();
 		thread->join();
 		delete thread;
 		thread = nullptr;
-		return;
+		return true;
+	} else {
+		return false;
 	}
+}
+
+bool QueueHandler::isRunning() {
+	return !dead;
 }
 
 void QueueHandler::run() {

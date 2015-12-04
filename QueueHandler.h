@@ -23,8 +23,10 @@ public:
 	virtual ConcurrentQueue * setQueue(ConcurrentQueue * queue);
 	virtual ConcurrentQueue * getQueue();
 	virtual ConcurrentQueue * unsetQueue();
-	virtual void start();
-	virtual void stop();
+	virtual bool hasQueue();
+	virtual bool start();
+	virtual bool stop();
+	virtual bool isRunning();
 	virtual void awake();
 	virtual ~QueueHandler();
 };

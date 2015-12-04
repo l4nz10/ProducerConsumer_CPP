@@ -14,6 +14,7 @@ public:
 	Producer(std::string name);
 	virtual ConcurrentQueue * setQueue(ConcurrentQueue * queue);
 	virtual ConcurrentQueue * safeUnsetQueue();
+	virtual ~Producer();
 };
 
 #endif /* PRODUCER_H_ */
