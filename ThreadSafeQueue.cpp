@@ -1,30 +1,30 @@
 #include <iostream>
 
 #include "ThreadSafeQueue.h"
+#include "Producer.h"
+#include "Consumer.h"
 
-ThreadSafeQueue::ThreadSafeQueue(unsigned int size) : MAX_SIZE(size) {}
+ThreadSafeQueue::ThreadSafeQueue(std::string name, unsigned int size) : Queue(name, size) {}
 
 ThreadSafeQueue::~ThreadSafeQueue() {
-	std::vector<QueueHandler *> prods(producers);
-	std::vector<QueueHandler *> conss(consumers);
-	for (unsigned int i = 0; i < prods.size(); i++) {
-		prods[i]->unsetQueue();
+	for (unsigned int i = 0; i < producers.size(); i++) {
+		((Producer *) producers[i])->unsetQueueUnsafe();
 	}
-	for (unsigned int i = 0; i < conss.size(); i++) {
-		conss[i]->unsetQueue();
+	for (unsigned int i = 0; i < consumers.size(); i++) {
+		((Consumer *) consumers[i])->unsetQueueUnsafe();
 	}
 }
 
-void ThreadSafeQueue::addProducer(QueueHandler * producer) {
+void ThreadSafeQueue::addProducer(ConcurrentQueueHandler * producer) {
 	producers.push_back(producer);
 }
 
-void ThreadSafeQueue::addConsumer(QueueHandler * consumer) {
+void ThreadSafeQueue::addConsumer(ConcurrentQueueHandler * consumer) {
 	consumers.push_back(consumer);
 }
 
-void ThreadSafeQueue::removeProducer(QueueHandler * producer) {
-	for (std::vector<QueueHandler *>::iterator it = producers.begin(); it != producers.end(); ++it) {
+void ThreadSafeQueue::removeProducer(ConcurrentQueueHandler * producer) {
+	for (std::vector<ConcurrentQueueHandler *>::iterator it = producers.begin(); it != producers.end(); ++it) {
 		if (*it == producer) {
 			producers.erase(it);
 			break;
@@ -32,8 +32,8 @@ void ThreadSafeQueue::removeProducer(QueueHandler * producer) {
 	}
 }
 
-void ThreadSafeQueue::removeConsumer(QueueHandler * consumer) {
-	for (std::vector<QueueHandler *>::iterator it = consumers.begin(); it != consumers.end(); ++it) {
+void ThreadSafeQueue::removeConsumer(ConcurrentQueueHandler * consumer) {
+	for (std::vector<ConcurrentQueueHandler *>::iterator it = consumers.begin(); it != consumers.end(); ++it) {
 		if (*it == consumer) {
 			consumers.erase(it);
 			break;

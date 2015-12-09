@@ -260,6 +260,14 @@ void CommandLineInterface::listEntities(std::vector<std::string> args) {
     } else {
       for (int i = 0; i < producers.size(); i++) {
         std::cout << "(" << i << "): " << "Producer";
+        if (producers[i]->hasQueue()) {
+          for (int j = 0; j < queues.size(); j++) {
+            if (queues[j] == producers[i]->getQueue()) {
+              std::cout << " >> Queue #" << j;
+              break;
+            }
+          }
+        }
         if (producers[i]->isRunning()) {
           std::cout << " *running*";
         }
@@ -274,6 +282,14 @@ void CommandLineInterface::listEntities(std::vector<std::string> args) {
     } else {
       for (int i = 0; i < consumers.size(); i++) {
         std::cout << "(" << i << "): " << "Consumer";
+        if (consumers[i]->hasQueue()) {
+          for (int j = 0; j < queues.size(); j++) {
+            if (queues[j] == consumers[i]->getQueue()) {
+              std::cout << " << Queue #" << j;
+              break;
+            }
+          }
+        }
         if (consumers[i]->isRunning()) {
           std::cout << " *running*";
         }

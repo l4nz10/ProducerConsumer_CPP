@@ -10,7 +10,7 @@
 #include "Factory.h"
 #include "BasicFactory.h"
 
-Factory* Factory::getFactory(int typecode) {
+Factory * Factory::getFactory(int typecode) {
 	switch (typecode) {
 		case 1:
 			return new BasicFactory;

@@ -3,18 +3,18 @@
 
 #include <string>
 
-#include "QueueHandler.h"
+#include "ConcurrentQueueHandler.h"
 
-class Producer : public QueueHandler {
+class Producer : public ConcurrentQueueHandler {
 private:
 	int counter;
 protected:
 	virtual bool execute();
 public:
 	Producer(std::string name);
-	virtual ThreadSafeQueue * setQueue(ThreadSafeQueue * queue);
-	virtual ThreadSafeQueue * unsetQueue();
-	virtual ThreadSafeQueue * unsetQueueUnsafe();
+	virtual Queue * setQueue(Queue * newQueue);
+	virtual Queue * unsetQueue();
+	virtual Queue * unsetQueueUnsafe();
 	virtual ~Producer();
 };
 

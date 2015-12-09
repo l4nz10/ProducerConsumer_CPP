@@ -3,25 +3,25 @@
 
 #include <mutex>
 #include <queue>
+#include <string>
 #include <vector>
 
-#include "QueueHandler.h"
+#include "Queue.h"
+#include "ConcurrentQueueHandler.h"
 
-class ThreadSafeQueue {
+class ThreadSafeQueue : public Queue {
 protected:
 	std::mutex mutex;
-	std::queue<int> queue;
-	std::vector<QueueHandler *> producers;
-	std::vector<QueueHandler *> consumers;
-	const unsigned int MAX_SIZE;
+	std::vector<ConcurrentQueueHandler *> producers;
+	std::vector<ConcurrentQueueHandler *> consumers;
 	virtual void awakeProducers();
 	virtual void awakeConsumers();
 public:
-	explicit ThreadSafeQueue(unsigned int size);
-	virtual void addProducer(QueueHandler * producer);
-	virtual void addConsumer(QueueHandler * consumer);
-	virtual void removeProducer(QueueHandler * producer);
-	virtual void removeConsumer(QueueHandler * consumer);
+	explicit ThreadSafeQueue(std::string name, unsigned int size = 1000);
+	virtual void addProducer(ConcurrentQueueHandler * producer);
+	virtual void addConsumer(ConcurrentQueueHandler * consumer);
+	virtual void removeProducer(ConcurrentQueueHandler * producer);
+	virtual void removeConsumer(ConcurrentQueueHandler * consumer);
 	virtual bool push(int element);
 	virtual bool pop();
 	virtual int get();

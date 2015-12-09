@@ -3,31 +3,31 @@
 #include "Consumer.h"
 #include "ThreadSafeQueue.h"
 
-Consumer::Consumer(std::string name) : QueueHandler(name) {};
+Consumer::Consumer(std::string name) : ConcurrentQueueHandler(name) {};
 
 Consumer::~Consumer() {
 	stop();
 	if (hasQueue()) {
-		queue->removeConsumer(this);
+		((ThreadSafeQueue *) queue)->removeConsumer(this);
 	}
 }
 
-ThreadSafeQueue * Consumer::setQueue(ThreadSafeQueue * q) {
-	ThreadSafeQueue * oldQueue = QueueHandler::setQueue(q);
+Queue * Consumer::setQueue(Queue * newQueue) {
+	Queue * oldQueue = ConcurrentQueueHandler::setQueue(newQueue);
 	if (oldQueue != nullptr) {
-		oldQueue->removeConsumer(this);
+		((ThreadSafeQueue *) oldQueue)->removeConsumer(this);
 	}
 	if (queue != nullptr) {
-		queue->addConsumer(this);
+		((ThreadSafeQueue *) queue)->addConsumer(this);
 	}
 	return oldQueue;
 }
 
-ThreadSafeQueue * Consumer::unsetQueue() {
-	return setQueue(nullptr);
+Queue * Consumer::unsetQueue() {
+	return Consumer::setQueue(nullptr);
 }
 
-ThreadSafeQueue * Consumer::unsetQueueUnsafe() {
+Queue * Consumer::unsetQueueUnsafe() {
 	return QueueHandler::unsetQueue();
 }
 

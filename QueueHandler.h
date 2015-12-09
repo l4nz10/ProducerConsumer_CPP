@@ -2,33 +2,21 @@
 #define QUEUEHANDLER_H_
 
 #include <string>
-#include <thread>
-#include <mutex>
-#include <condition_variable>
 
-class ThreadSafeQueue;
+#include "Queue.h"
 
 class QueueHandler {
 protected:
-	std::string name;
-	ThreadSafeQueue * queue;
-	std::thread* thread;
-	std::mutex mutex;
-	std::condition_variable cv;
-	bool dead, keep_going;
-	QueueHandler(std::string name);
-	virtual void run();
-	virtual bool execute() = 0;
+  std::string name;
+  Queue * queue;
+  QueueHandler(std::string name);
+  virtual bool execute() = 0;
 public:
-	virtual ThreadSafeQueue * setQueue(ThreadSafeQueue * queue);
-	virtual ThreadSafeQueue * getQueue();
-	virtual ThreadSafeQueue * unsetQueue();
-	virtual bool hasQueue();
-	virtual bool start();
-	virtual bool stop();
-	virtual bool isRunning();
-	virtual void awake();
-	virtual ~QueueHandler();
+  virtual Queue * setQueue(Queue * queue);
+  virtual Queue * unsetQueue();
+  virtual const Queue * getQueue();
+  virtual bool hasQueue();
+  virtual ~QueueHandler ();
 };
 
-#endif /* QUEUEHANDLER_H_ */
+#endif

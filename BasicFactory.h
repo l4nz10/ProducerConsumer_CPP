@@ -1,10 +1,3 @@
-/*
- * BasicFactory.h
- *
- *  Created on: 30 nov 2015
- *      Author: valerio
- */
-
 #ifndef BASICFACTORY_H_
 #define BASICFACTORY_H_
 
@@ -15,9 +8,9 @@ private:
 	int producerCtr, consumerCtr, queueCtr;
 public:
 	BasicFactory();
-	virtual Producer* createProducer();
-	virtual Consumer* createConsumer();
-	virtual ThreadSafeQueue* createQueue(int size);
+	virtual Producer * createProducer();
+	virtual Consumer * createConsumer();
+	virtual Queue * createQueue(unsigned int size);
 	virtual ~BasicFactory();
 };
 

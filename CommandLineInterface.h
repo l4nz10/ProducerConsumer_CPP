@@ -11,7 +11,7 @@ private:
   Factory * factory;
   std::vector<Producer *> producers;
   std::vector<Consumer *> consumers;
-  std::vector<ThreadSafeQueue *> queues;
+  std::vector<Queue *> queues;
   void welcome();
   void selectFactory();
   void mainMenu();
