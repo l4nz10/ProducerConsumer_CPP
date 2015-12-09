@@ -3,6 +3,7 @@
 #include <cstring>
 #include <vector>
 #include <thread>
+#include <cmath>
 
 #include "CommandLineInterface.h"
 #include "string_utils.h"
@@ -86,6 +87,8 @@ void CommandLineInterface::mainMenu() {
         startQueueHandler(args);
       } else if (command == "stop") {
         stopQueueHandler(args);
+      } else if (command == "watch" || command == "w") {
+        watch();
       } else if (command == "help" || command == "h") {
         showHelp();
       } else if (command == "quit" || command == "q") {
@@ -599,6 +602,8 @@ void CommandLineInterface::showHelp() {
                          "  \"Start the producers and/or consumers of number '#'.\"\n"
                          "- stop  ( p (#)+ | c (#)+ )+ \n"
                          "  \"Stop the producers and/or consumers of number '#'.\"\n"
+                         "- watch, w \n"
+                         "  \"Watch the current progress of the queues\"\n"
                          "- help, h \n"
                          "  \"Show this message.\"\n"
                          "- quit, q \n"
@@ -606,6 +611,35 @@ void CommandLineInterface::showHelp() {
   std::cout << "* List of commands:" << "\n" << commands << std::endl;
 }
 
+void CommandLineInterface::watch() {
+  if (queues.empty()) {
+    std::cout << "<No queues>" << std::endl;
+  } else {
+    keepWatching = true;
+    std::thread thread(&CommandLineInterface::visualQueues, this);
+    std::string nothing;
+    std::getline(std::cin, nothing);
+    keepWatching = false;
+    thread.join();
+  }
+}
+
+void CommandLineInterface::visualQueues() {
+  std::chrono::milliseconds sleepTime(250);
+  while (keepWatching) {
+    clearScreen();
+    for (int i = 0; i < queues.size(); i++) {
+      int progress = ceil(1. * queues[i]->size() * 50 / queues[i]->capacity());
+      int percentage = ceil(1. * queues[i]->size() * 100 / queues[i]->capacity());
+      std::cout << "Queue #" << i << ": ["
+                << std::string(progress, '#') << std::string(50 - progress, '_') << "]"
+                << " " << percentage << "%" << "\n";
+    }
+    std::cout << "\n" << "Press ENTER to stop watching." << "\n";
+    std::this_thread::sleep_for(sleepTime);
+  }
+}
+
 void CommandLineInterface::clearScreen() {
-  std::cout << std::string(100, '\n');
+  std::cout << std::string(50, '\n');
 }

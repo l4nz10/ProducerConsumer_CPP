@@ -12,6 +12,7 @@ private:
   std::vector<Producer *> producers;
   std::vector<Consumer *> consumers;
   std::vector<Queue *> queues;
+  bool keepWatching;
   void welcome();
   void selectFactory();
   void mainMenu();
@@ -24,6 +25,8 @@ private:
   void stopQueueHandler(std::vector<std::string> args);
   void showHelp();
   void clearScreen();
+  void visualQueues();
+  void watch();
 public:
   CommandLineInterface();
   virtual ~CommandLineInterface();

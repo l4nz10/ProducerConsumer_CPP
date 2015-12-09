@@ -4,7 +4,7 @@
 #include "Queue.h"
 
 
-Queue::Queue(std::string name, unsigned int size) : name(name), MAX_SIZE(size) {}
+Queue::Queue(std::string name, unsigned int capacity) : name(name), MAX_SIZE(capacity) {}
 
 bool Queue::push(int element) {
 	if (queue.size() < MAX_SIZE) {
@@ -41,6 +41,10 @@ int Queue::get_and_pop() {
 
 unsigned int Queue::size() {
 	return queue.size();
+}
+
+unsigned int Queue::capacity() {
+	return MAX_SIZE;
 }
 
 Queue::~Queue() {}

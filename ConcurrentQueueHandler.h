@@ -10,7 +10,7 @@
 
 class ConcurrentQueueHandler : public QueueHandler {
 protected:
-	std::thread* thread;
+	std::thread * thread;
 	std::mutex mutex;
 	std::condition_variable cv;
 	bool dead, keep_going;
