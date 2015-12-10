@@ -28,7 +28,7 @@ Queue * Consumer::unsetQueue() {
 }
 
 Queue * Consumer::unsetQueueUnsafe() {
-	return QueueHandler::unsetQueue();
+	return ConcurrentQueueHandler::unsetQueue();
 }
 
 bool Consumer::execute() {
